@@ -35,25 +35,25 @@
 </head>
 <body>
 
-<!-- লগইন এরিয়া -->
+<!-- প্রবেশ এরিয়া -->
 <div id="login-box">
-    <h2>স্বাগতম</h2>
-    <p style="color: #666; font-size: 13px; margin-bottom: 10px;">গ্রুপে ঢুকতে ইউজারনেম ও পাসওয়ার্ড দিন</p>
-    <input type="text" id="username" placeholder="ইউজারনেম (ইংরেজিতে)">
-    <input type="password" id="password" placeholder="রুম পাসওয়ার্ড">
-    <button onclick="login()">প্রবেশ করুন</button>
+    <h2>অনলাইন আড্ডা</h2>
+    <p style="color: #666; font-size: 13px; margin-bottom: 10px;">আপনার নাম এবং রুম কোড দিয়ে প্রবেশ করুন</p>
+    <input type="text" id="username" placeholder="আপনার সুন্দর একটি নাম দিন">
+    <input type="text" id="roomkey" placeholder="সিক্রেট রুম কি (Room Key)">
+    <button onclick="enterChat()">রুমে প্রবেশ করুন</button>
 </div>
 
 <!-- চ্যাট রুম এরিয়া -->
 <div id="chat-box">
     <div id="chat-header">
         <span id="room-title">অনলাইন আড্ডা</span>
-        <button onclick="location.reload()" style="width:auto; background:transparent; font-size:12px; padding:5px;">লগআউট</button>
+        <button onclick="location.reload()" style="width:auto; background:transparent; font-size:12px; padding:5px;">বেরিয়ে যান</button>
     </div>
     
     <!-- ইউজার খোঁজার অপশন -->
     <div id="search-container">
-        <input type="text" id="search-input" placeholder="ইউজারনেম দিয়ে মেসেজ খুঁজুন...">
+        <input type="text" id="search-input" placeholder="বন্ধুর নাম লিখে মেসেজ খুঁজুন...">
         <button id="search-btn" onclick="searchUserMessages()">খুঁজুন</button>
     </div>
     
@@ -71,11 +71,11 @@
 
 <script>
     //---------------------------------------------------------
-    // এখানে "আপনার_পাসওয়ার্ড" কেটে আপনার গোপন পাসওয়ার্ডটি বসিয়ে দিন
+    // এখানে "chat123" কেটে আপনার বন্ধুদের জন্য একটি গোপন রুম কোড দিন
     //---------------------------------------------------------
-    const ROOM_PASSWORD = "আপনার_পাসওয়ার্ড"; 
+    const SECRET_ROOM_KEY = "chat123"; 
 
-    // Firebase কনফিগারেশন (একটি ফ্রি পাবলিক ডাটাবেজ)
+    // Firebase কনফিগারেশন
     const firebaseConfig = {
         databaseURL: "https://public-chat-bdfc3-default-rtdb.firebaseio.com/"
     };
@@ -85,23 +85,24 @@
     
     let currentUser = "";
 
-    // লগইন ফাংশন
-    function login() {
+    // চ্যাট রুমে প্রবেশের ফাংশন (সাইন-আপ ছাড়াই)
+    function enterChat() {
         const userInp = document.getElementById('username').value.trim();
-        const passInp = document.getElementById('password').value.trim();
+        const keyInp = document.getElementById('roomkey').value.trim();
 
-        if(userInp === "" || passInp === "") {
-            alert("দয়া করে ইউজারনেম এবং পাসওয়ার্ড দুটিই দিন।");
+        if(userInp === "" || keyInp === "") {
+            alert("দয়া করে আপনার নাম এবং রুম কি দুটিই দিন।");
             return;
         }
 
-        if(passInp === ROOM_PASSWORD) {
+        // রুম কি মিলে গেলেই যে কোনো নাম নিয়ে ভেতরে ঢুকতে দেবে
+        if(keyInp === SECRET_ROOM_KEY) {
             currentUser = userInp;
             document.getElementById('login-box').style.display = 'none';
             document.getElementById('chat-box').style.display = 'flex';
             loadMessages(); 
         } else {
-            alert("দুঃখিত! পাসওয়ার্ডটি সঠিক নয়।");
+            alert("দুঃখিত! রুম কি (Room Key) সঠিক নয়। আপনার বন্ধুর থেকে সঠিক কি-টি জেনে নিন।");
         }
     }
 
